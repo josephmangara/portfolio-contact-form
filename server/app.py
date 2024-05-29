@@ -33,7 +33,6 @@ db.init_app(app)
 
 api = Api(app)
 
-
 class Home(Resource):
     def get(self):
         return jsonify({"message": "Clients API"})

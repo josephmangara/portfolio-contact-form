@@ -13,3 +13,5 @@ class Client(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f"name= {self.name} , email = {self.email}"
+    
+    
