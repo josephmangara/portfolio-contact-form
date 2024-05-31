@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 flask = "2.2.2"
+flask-mail = "*"
+flask-cors = "3.0.10"
 flask-migrate = "3.1.0"
 flask-restful = "0.3.9"
 flask-serializer = "0.0.5.1"
