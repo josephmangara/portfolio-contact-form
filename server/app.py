@@ -41,23 +41,32 @@ api.add_resource(Home, '/')
 
 @app.route("/contact", methods=['POST'])
 def send_email():
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    #saving client info
-    new_client = Client(name=data['name'], email=data['email'], message=data['message'])
-    db.session.add(new_client)
-    db.session.commit()
+        # Saving client info
+        new_client = Client(name=data['name'], email=data['email'], message=data['message'])
+        db.session.add(new_client)
+        db.session.commit()
 
-    #sending email
-    msg = Message(
-        subject=f"Portfolio contact form submission from {data['name']}",
-        sender=data['email'],
-        recipients=[app.config['MAIL_USERNAME']],   
-        body=data['message']
-    )
-    mail.send(msg)
+        # Sending email
+        msg = Message(
+            subject=f"Portfolio contact form submission from {data['name']}",
+            sender=data['email'],
+            recipients=[app.config['MAIL_USERNAME']],   
+            body=data['message']
+        )
+        mail.send(msg)
 
-    return jsonify({"message": "Email sent!"}), 200
+        return jsonify({"message": "Email sent!"}), 200
+
+    except KeyError as e:
+        db.session.rollback()  # Rollback if data save failed
+        return jsonify({"error": f"Missing required field: {str(e)}"}), 400
+
+    except Exception as e:
+        db.session.rollback()  # Rollback if there's any other error
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
 if __name__ == "__main__":
